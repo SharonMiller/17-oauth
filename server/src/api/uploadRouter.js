@@ -6,7 +6,7 @@ import multer from 'multer';
 import auth from '../auth/lib/middleware.js';
 import s3 from '../auth/lib/s3';
 
-const uploadRouter = express.Router;
+const uploadRouter = express.Router();
 
 const upload = multer({dest: `${__dirname}/../../tmp/`});
 
@@ -18,7 +18,7 @@ uploadRouter.post('/upload', auth, upload.any(), (req, res, next) => {
   }
 
   let file = req.files[0];
-  let key = `${file.filemame}.${file.originalname}`;
+  let key = `${file.filename}.${file.originalname}`;
 
   s3.upload(file.path, key)
     .then(url => {
