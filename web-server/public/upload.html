@@ -7,7 +7,6 @@
 <body>
 
     <main>
-        <img src="https://s3-us-west-2.amazonaws.com/rugbyscout" alt="" srcset="">
         <h1>Upload File</h1>
         <em>Note: This will not work unless you set a Bearer Authorization header with a valid token...</em>
         <form id="upload" enctype="multipart/form-data">
@@ -40,7 +39,7 @@
                     'Authorization': 'Bearer ' + token
                 },
                 success: function(response){
-                    console.log(response); // do work...whatever that may be
+                    console.log(response); 
                 }
             })
         });
