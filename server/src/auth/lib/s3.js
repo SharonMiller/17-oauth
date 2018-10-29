@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import aws from 'aws-sdk';
 
 const s3 = new aws.S3({
-  accessKey: process.env.AWS_ID,
+  accessKeyId: process.env.AWS_ID,
   secretAccessKey: process.env.AWS_SECRET,
 });
 
