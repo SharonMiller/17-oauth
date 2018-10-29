@@ -10,12 +10,15 @@
   "author": "Sharon Miller, Connor Crossley, Alex Hanson",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.332.0",
     "babel": "^6.23.0",
     "bcrypt": "^3.0.1",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "fs-extra": "^7.0.0",
     "jsonwebtoken": "^8.3.0",
+    "multer": "^1.4.1",
     "register": "0.0.0"
   },
   "devDependencies": {

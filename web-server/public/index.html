@@ -9,12 +9,97 @@
 </head>
 
 <body>
-  <div id="githubAuth">
+  <main>
+    Access Token: <span id="token"></span>
+    <hr>
+    <h2>Rugby Player Data Entry</h2>
 
-  </div>
+    <div id="rugby-stats">
+      <form id="rugby-get">
+        <h2>Find Player Stats</h2>
+        <label for="player-id">Player ID:</label>
+        <input type="text" name="player-id" autocomplete="off">
+        <input type="submit" value="retrieve-player">
+      </form>
+      <section id="get-player"></section>
+
+      <form id="rugby-delete">
+        <h2>Remove Player</h2>
+        <label for="player-id">Player ID:</label>
+        <input type="text" name="player-id" autocomplete="off">
+        <input type="submit" value="delete-player">
+      </form>
+
+      <form id="rugby-post">
+        <h2>Add Player Stats</h2>
+        <label for="player-name">Player Name:</label>
+        <input type="text" name="player-name" autocomplete="off">
+        <label for="player-position">Position:</label>
+        <input type="number" name="player-position" autocomplete="off">
+        <label for="player-matches">Matches:</label>
+        <input type="number" name="player-matches" autocomplete="off">
+        <label for="player-tries">Tries:</label>
+        <input type="number" name="player-tries" autocomplete="off">
+        <label for="player-points">Points:</label>
+        <input type="number" name="player-points" autocomplete="off">
+        <input type="submit" value="add-player">
+      </form>
+
+      <form id="rugby-put">
+        <h2>Update Player Stats</h2>
+        <label for="player-id">Player ID:</label>
+        <input type="text" name="player-id" autocomplete="off">
+        <label for="player-name">Player Name:</label>
+        <input type="text" name="player-name" autocomplete="off">
+        <label for="player-position">Position:</label>
+        <input type="number" name="player-position" autocomplete="off">
+        <label for="player-matches">Matches:</label>
+        <input type="number" name="player-matches" autocomplete="off">
+        <label for="player-tries">Tries:</label>
+        <input type="number" name="player-tries" autocomplete="off">
+        <label for="player-points">Points:</label>
+        <input type="number" name="player-points" autocomplete="off">
+        <input type="submit" value="update-player">
+      </form>
+    </div>
+
+    <div id="auth">
+      <form id="register">
+        <h2>Register</h2>
+        <label for="user-name">User Name:</label>
+        <input type="text" name="user-name" autocomplete="off">
+        <label for="password">Password:</label>
+        <input type="password" name="password" autocomplete="off">
+        <input type="submit" value="Create User">
+      </form>
+
+      <form id="signin">
+        <h2>Signin</h2>
+        <label for="user-name">User Name:</label>
+        <input type="text" name="user-name" autocomplete="off">
+        <label for="password">Password:</label>
+        <input type="password" name="password" autocomplete="off">
+        <input type="submit" value="Sign in">
+      </form>
+    </div>
+
+    <div id="githubAuth">
+
+
+    </div>
+
+  </main>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.8.3/superagent.min.js"></script>
+
   <script>
+    $('document').ready(function () {
+      $('#rugby-stats').hide();
+      $('#auth').show();
+    });
+
+    //github registration
     let githubURL = 'https://github.com/login/oauth/authorize';
 
     let options = {
@@ -25,11 +110,111 @@
       allow_signup: `true`
     }
 
-
     let QueryString = Object.keys(options).map(key => `${key}=${encodeURIComponent(options[key])}`).join('&');
     let authURL = `${githubURL}?${QueryString}`;
 
     $('#githubAuth').append(`<a href="${authURL}">Login with Github</a>`);
+
+    //User Registration
+    $('#register').on('submit', function (e) {
+      e.preventDefault();
+      let username = $(this).find('[name=user-name]').val();
+      let password = $(this).find('[name=password]').val();
+      let postData = { username, password }
+
+      superagent.post('http://localhost:3000/register')
+        .send(postData)
+        .then(response => {
+          localStorage.setItem('token', `${response.text}`);
+          $('#token').text(response.text);
+          $('#rugby-stats').show();
+          $('#auth').hide();
+        })
+    });
+
+    //User Signin
+    $('#signin').on('submit', function (e) {
+      e.preventDefault();
+      let username = $(this).find('[name=user-name]').val();
+      let password = $(this).find('[name=password]').val();
+      let authString = btoa(`${username}:${password}`);
+
+      superagent.get('http://localhost:3000/signin')
+        .set('Authorization', 'Basic ' + authString)
+        .then(response => {
+          localStorage.setItem('token', `${response.text}`);
+          $('#token').text(response.text);
+          $('#rugby-stats').fadeIn();
+          $('#auth').fadeOut();
+        })
+    });
+
+    /********************************************************************************
+    *         player crud api                                                       *
+    ********************************************************************************/
+
+    $('#rugby-get').on('submit', function (e) {
+      e.preventDefault();
+      let id = $(this).find('[name=player-id]').val();
+
+      superagent.get(`http://localhost:3000/player/get/${id}`)
+        .set("Authorization", "Bearer " + token.innerHTML)
+        .set('Content-Type', 'application/json')
+        .then(response => {
+          $('#get-player').text(response.body);
+        })
+    })
+
+    $('#rugby-post').on('submit', function (e) {
+      e.preventDefault();
+      let playerName = $(this).find('[name=player-name]').val();
+      let position = $(this).find('[name=player-position]').val();
+      let matches = $(this).find('[name=player-matches]').val();
+      let tries = $(this).find('[name=player-tries]').val();
+      let points = $(this).find('[name=player-points]').val();
+      let postData = { playerName, position, matches, tries, points };
+      console.log(token.innerHTML);
+      console.log(postData);
+
+      superagent.post('http://localhost:3000/player')
+        .set("Authorization", "Bearer " + token.innerHTML)
+        .send(postData)
+        .then(response => {
+          console.log(response);
+          response.send(response);
+        })
+    })
+
+    $('#rugby-delete').on('submit', function (e) {
+      e.preventDefault();
+      let id = $(this).find('[name=player-id]').val();
+
+      superagent.delete(`http://localhost:3000/player/delete/${id}`)
+        .set("Authorization", "Bearer " + token.innerHTML)
+        .then(response => {
+          $('#get-player').text(response.body);
+        })
+    })
+
+    $('#rugby-put').on('submit', function (e) {
+      e.preventDefault();
+      let id = $(this).find('[name=player-id]').val();
+      let playerName = $(this).find('[name=player-name]').val();
+      let position = $(this).find('[name=player-position]').val();
+      let matches = $(this).find('[name=player-matches]').val();
+      let tries = $(this).find('[name=player-tries]').val();
+      let points = $(this).find('[name=player-points]').val();
+      let putData = { playerName, position, matches, tries, points }
+
+      superagent.put(`http://localhost:3000/player/put/${id}`)
+        .set("Authorization", "Bearer " + token.innerHTML)
+        .send(putData)
+        .then(response => {
+          $('#get-player').text(response.body);
+        })
+
+    })
+
   </script>
 </body>
 

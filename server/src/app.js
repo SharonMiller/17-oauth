@@ -3,7 +3,12 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+
 import router from './api/api.js';
+import uploadRouter from './api/uploadRouter';
+
+import errorHandler from './middleware/error';
+import notFound from './middleware/404';
 
 let app = express();
 
@@ -11,7 +16,13 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(uploadRouter);
 app.use(router);
+
+// app.use(notFound);
+// app.use(errorHandler);
+
 
 let isRunning = false;
 
