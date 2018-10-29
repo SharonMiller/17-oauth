@@ -1,19 +1,19 @@
 'use strict';
 
 import express from 'express';
+const uploadRouter = express.Router();
+
 import multer from 'multer';
+const upload = multer({ dest: `${__dirname}/../../tmp` });
+
 
 import auth from '../auth/lib/middleware.js';
 import s3 from '../auth/lib/s3';
 
-const uploadRouter = express.Router();
-
-const upload = multer({dest: `${__dirname}/../../tmp/`});
-
 uploadRouter.post('/upload', auth, upload.any(), (req, res, next) => {
-  console.log(req.files);
 
-  if(!req.files.length){
+
+  if (!req.files.length) {
     return next('Invalid File Upload');
   }
 
@@ -22,7 +22,9 @@ uploadRouter.post('/upload', auth, upload.any(), (req, res, next) => {
 
   s3.upload(file.path, key)
     .then(url => {
-      res.send({url: url});
+      console.log('in s3.upload callback');
+      res.status(200);
+      res.send({ url: url });
     })
     .catch(next);
 });

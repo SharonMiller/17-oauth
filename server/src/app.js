@@ -20,8 +20,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(uploadRouter);
 app.use(router);
 
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
 
 let isRunning = false;

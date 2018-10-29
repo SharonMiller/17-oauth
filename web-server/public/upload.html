@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Upload a file</title>
 </head>
+
 <body>
 
     <main>
@@ -21,14 +23,19 @@
             <button type="submit">Upload File</button>
         </form>
     </main>
-    
-    <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
 
     <script>
-        $("#upload").on('submit', function(e){
+
+        $("#upload").on('submit', function (e) {
             e.preventDefault();
             let formData = new FormData(this);
+            console.log('form data', formData);
             let token = localStorage.getItem('token');
+            console.log('we are in upload on index.html')
+            console.log('this is my token', token);
             $.ajax({
                 type: 'POST',
                 url: 'http://localhost:3000/upload',
@@ -36,14 +43,15 @@
                 processData: false,
                 contentType: false,
                 headers: {
-                    'Authorization': 'Bearer ' + token
+                    "Authorization": "Bearer " + token
                 },
-                success: function(response){
-                    console.log(response); 
+                success: function (response) {
+                    console.log(response);
                 }
             })
         });
     </script>
 
 </body>
+
 </html>

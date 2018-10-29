@@ -69,8 +69,6 @@ router.delete('/player/delete/:id', auth, (req, res, next) => {
 
 });
 
-router.all('*', (req, res, next) => {
-  res.status(404).send('Bad request').end();
-});
+
 
 export default router;

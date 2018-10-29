@@ -125,6 +125,7 @@
       superagent.post('http://localhost:3000/register')
         .send(postData)
         .then(response => {
+          localStorage.setItem('token', `${response.text}`);
           $('#token').text(response.text);
           $('#rugby-stats').show();
           $('#auth').hide();
@@ -141,6 +142,7 @@
       superagent.get('http://localhost:3000/signin')
         .set('Authorization', 'Basic ' + authString)
         .then(response => {
+          localStorage.setItem('token', `${response.text}`);
           $('#token').text(response.text);
           $('#rugby-stats').fadeIn();
           $('#auth').fadeOut();

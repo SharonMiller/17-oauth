@@ -12,9 +12,11 @@ const upload = (filepath, key) => {
   let config = {
     Bucket: process.env.AWS_BUCKET,
     Key: key,
+    ACL: 'public-read',
     Body: fs.createReadStream(filepath),
   };
-
+  console.log('this is S3', s3);
+  console.log('right before actual upload call');
   return s3.upload(config)
     .promise()
     .then(res => {
@@ -29,4 +31,4 @@ const upload = (filepath, key) => {
     });
 };
 
-export default {upload};
+export default { upload };
